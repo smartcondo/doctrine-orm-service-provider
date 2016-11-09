@@ -22,36 +22,36 @@ class DoctrineOrmServiceProvider implements ServiceProviderInterface
     const YAML_DRIVER = 'yaml';
 
     /**
-     * @param Container $pimple
+     * @param Container $app
      */
-    public function register(Container $pimple)
+    public function register(Container $app)
     {
-        $pimple['orm.em.configuration'] = function() use($pimple) {
+        $app['orm.em.configuration'] = function() use($app) {
             $config = new Configuration();
-            if (!empty($pimple['orm.cache.class']) && $pimple['orm.cache.class'] instanceof CacheProvider) {
-                $config->setMetadataCacheImpl($pimple['orm.cache.class']);
-                $config->setQueryCacheImpl($pimple['orm.cache.class']);
+            if (!empty($app['orm.cache.class']) && $app['orm.cache.class'] instanceof CacheProvider) {
+                $config->setMetadataCacheImpl($app['orm.cache.class']);
+                $config->setQueryCacheImpl($app['orm.cache.class']);
             }
 
-            $useSimpleAnnotationReader = $pimple['orm.simple.reader'] ? false : true;
-            $driver = $config->newDefaultAnnotationDriver([$pimple['orm.path.entities']], $useSimpleAnnotationReader);
+            $useSimpleAnnotationReader = $app['simple.reader'] ? false : true;
+            $driver = $config->newDefaultAnnotationDriver([$app['orm.path.entities']], $useSimpleAnnotationReader);
 
-            if (self::XML_DRIVER == $pimple['orm.driver']) {
-                $driver = new XmlDriver($pimple['orm.path.entities']);
+            if (self::XML_DRIVER == $app['orm.driver']) {
+                $driver = new XmlDriver($app['orm.path.entities']);
             }
 
-            if (self::YAML_DRIVER == $pimple['orm.driver']) {
-                $driver = new YamlDriver($pimple['orm.path.entities']);
+            if (self::YAML_DRIVER == $app['orm.driver']) {
+                $driver = new YamlDriver($app['orm.path.entities']);
             }
 
             $config->setMetadataDriverImpl($driver);
-            $config->setProxyDir($pimple['orm.proxy.directory']);
-            $config->setProxyNamespace($pimple['orm.proxy.namespace']);
+            $config->setProxyDir($app['orm.proxy.directory']);
+            $config->setProxyNamespace($app['orm.proxy.namespace']);
             $config->setAutoGenerateProxyClasses(false);
 
-            if (isset($pimple['orm.generate.proxy.class.automatic']) &&
-                is_bool($pimple['orm.generate.proxy.class.automatic'])) {
-                $config->setAutoGenerateProxyClasses($pimple['orm.generate.proxy.class.automatic']);
+            if (isset($app['orm.generate.proxy.class.automatic']) &&
+                is_bool($app['orm.generate.proxy.class.automatic'])) {
+                $config->setAutoGenerateProxyClasses($app['orm.generate.proxy.class.automatic']);
             }
 
             return $config;
