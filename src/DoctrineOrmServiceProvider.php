@@ -33,7 +33,7 @@ class DoctrineOrmServiceProvider implements ServiceProviderInterface
                 $config->setQueryCacheImpl($pimple['orm.cache.class']);
             }
 
-            $useSimpleAnnotationReader = $pimple['orm.use.simple.annotation.reader'] ? false : true;
+            $useSimpleAnnotationReader = $pimple['orm.use_simple_reader'] ? false : true;
             $driver = $config->newDefaultAnnotationDriver([$pimple['orm.path.entities']], $useSimpleAnnotationReader);
 
             if (self::XML_DRIVER == $pimple['orm.driver']) {
